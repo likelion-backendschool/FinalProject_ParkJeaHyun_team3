@@ -38,5 +38,27 @@ public class MemberServiceTests {
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
         assertThat(member.getEmail()).isEqualTo("test@email.com");
+        assertThat(member.getNickName()).isEqualTo("none");
     }
+
+    @Test
+    @DisplayName("1명 회원 생성 테스트(+nickName)")
+    public void t2() throws Exception {
+        //given
+        String userName = "홍길동";
+        String password = "1234";
+        String email = "test@email.com";
+        String nickName = "Hong";
+
+        //when
+        List<Member> beforeMembers = memberRepository.findAll();
+        Member member = memberService.create(userName, password, email, nickName);
+        List<Member> afterMembers = memberRepository.findAll();
+
+        //then
+        assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
+        assertThat(member.getEmail()).isEqualTo("test@email.com");
+        assertThat(member.getNickName()).isEqualTo("Hong");
+    }
+
 }
