@@ -3,6 +3,7 @@ package com.ll.finalProject.member.controller;
 import com.ll.finalProject.member.MemberRegisterForm;
 import com.ll.finalProject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,17 @@ public class MemberController {
             return "member/signup_form";
         }
 
-        memberService.register(memberRegisterForm.getUsername(), memberRegisterForm.getPassword1(), memberRegisterForm.getEmail());
+        try {
+            memberService.register(memberRegisterForm.getUsername(), memberRegisterForm.getPassword1(), memberRegisterForm.getEmail());
+        }catch(DataIntegrityViolationException e) {
+            e.printStackTrace();
+            bindingResult.reject("signupFailed", "이미 등록된 사용자입니다.");
+            return "member/signup_form";
+        }catch(Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("signupFailed", e.getMessage());
+            return "member/signup_form";
+        }
 
         return "redirect:/member/welcome";
     }
