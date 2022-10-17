@@ -1,5 +1,6 @@
 package com.ll.finalProject;
 
+import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.entity.Member;
 import com.ll.finalProject.member.repository.MemberRepository;
 import com.ll.finalProject.member.service.MemberService;
@@ -32,13 +33,13 @@ public class MemberServiceTests {
 
         //when
         List<Member> beforeMembers = memberRepository.findAll();
-        Member member = memberService.create(userName, password, email);
+        MemberDto memberDto = memberService.create(userName, password, email);
         List<Member> afterMembers = memberRepository.findAll();
 
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
-        assertThat(member.getEmail()).isEqualTo("test@email.com");
-        assertThat(member.getNickName()).isEqualTo("none");
+        assertThat(memberDto.getEmail()).isEqualTo("test@email.com");
+        assertThat(memberDto.getNickName()).isEqualTo("none");
     }
 
     @Test
@@ -52,13 +53,13 @@ public class MemberServiceTests {
 
         //when
         List<Member> beforeMembers = memberRepository.findAll();
-        Member member = memberService.create(userName, password, email, nickName);
+        MemberDto memberDto = memberService.create(userName, password, email, nickName);
         List<Member> afterMembers = memberRepository.findAll();
 
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
-        assertThat(member.getEmail()).isEqualTo("test@email.com");
-        assertThat(member.getNickName()).isEqualTo("Hong");
+        assertThat(memberDto.getEmail()).isEqualTo("test@email.com");
+        assertThat(memberDto.getNickName()).isEqualTo("Hong");
     }
 
 }
