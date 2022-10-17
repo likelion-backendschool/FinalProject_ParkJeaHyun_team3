@@ -29,12 +29,6 @@ public class MemberController {
             return "member/signup_form";
         }
 
-        if (!memberRegisterForm.getPassword1().equals(memberRegisterForm.getPassword2())) {
-            bindingResult.rejectValue("password2", "passwordInCorrect",
-                    "2개의 패스워드가 일치하지 않습니다.");
-            return "member/signup_form";
-        }
-
         try {
             memberService.register(memberRegisterForm.getUsername(), memberRegisterForm.getPassword1(), memberRegisterForm.getEmail());
         }catch(DataIntegrityViolationException e) {
