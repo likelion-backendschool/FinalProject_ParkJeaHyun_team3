@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,6 +41,8 @@ public class MemberServiceTests {
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
         assertThat(memberDto.getEmail()).isEqualTo("test@email.com");
         assertThat(memberDto.getNickName()).isEqualTo("none");
+        assertThat(memberDto.getCreateDate().getMonth()).isEqualTo(LocalDateTime.now().getMonth());
+        assertThat(memberDto.getCreateDate().getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
     }
 
     @Test
@@ -60,6 +63,8 @@ public class MemberServiceTests {
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
         assertThat(memberDto.getEmail()).isEqualTo("test@email.com");
         assertThat(memberDto.getNickName()).isEqualTo("Hong");
+        assertThat(memberDto.getCreateDate().getMonth()).isEqualTo(LocalDateTime.now().getMonth());
+        assertThat(memberDto.getCreateDate().getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
     }
 
 }
