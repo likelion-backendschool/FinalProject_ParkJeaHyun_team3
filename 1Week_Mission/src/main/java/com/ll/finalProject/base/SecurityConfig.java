@@ -1,4 +1,4 @@
-package com.ll.finalProject;
+package com.ll.finalProject.base;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

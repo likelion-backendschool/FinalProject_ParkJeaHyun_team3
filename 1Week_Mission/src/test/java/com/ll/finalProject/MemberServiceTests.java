@@ -28,9 +28,9 @@ public class MemberServiceTests {
     @DisplayName("1명 회원 생성 테스트")
     public void t1() throws Exception {
         //given
-        String userName = "홍길동";
+        String userName = "jea5158";
         String password = "1234";
-        String email = "test@email.com";
+        String email = "jea5158@gmail.com";
 
         //when
         List<Member> beforeMembers = memberRepository.findAll();
@@ -39,7 +39,7 @@ public class MemberServiceTests {
 
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
-        assertThat(memberDto.getEmail()).isEqualTo("test@email.com");
+        assertThat(memberDto.getEmail()).isEqualTo("jea5158@gmail.com");
         assertThat(memberDto.getNickName()).isEqualTo("none");
         assertThat(memberDto.getCreateDate().getMonth()).isEqualTo(LocalDateTime.now().getMonth());
         assertThat(memberDto.getCreateDate().getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
@@ -49,9 +49,9 @@ public class MemberServiceTests {
     @DisplayName("1명 회원 생성 테스트(+nickName)")
     public void t2() throws Exception {
         //given
-        String userName = "홍길동";
+        String userName = "jea5158";
         String password = "1234";
-        String email = "test@email.com";
+        String email = "jea5158@gmail.com";
         String nickName = "Hong";
 
         //when
@@ -61,7 +61,7 @@ public class MemberServiceTests {
 
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
-        assertThat(memberDto.getEmail()).isEqualTo("test@email.com");
+        assertThat(memberDto.getEmail()).isEqualTo("jea5158@gmail.com");
         assertThat(memberDto.getNickName()).isEqualTo("Hong");
         assertThat(memberDto.getCreateDate().getMonth()).isEqualTo(LocalDateTime.now().getMonth());
         assertThat(memberDto.getCreateDate().getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
