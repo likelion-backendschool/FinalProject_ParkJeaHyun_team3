@@ -34,7 +34,7 @@ public class MemberServiceTests {
 
         //when
         List<Member> beforeMembers = memberRepository.findAll();
-        MemberDto memberDto = memberService.create(userName, password, email);
+        MemberDto memberDto = memberService.register(userName, password, email);
         List<Member> afterMembers = memberRepository.findAll();
 
         //then
@@ -56,7 +56,7 @@ public class MemberServiceTests {
 
         //when
         List<Member> beforeMembers = memberRepository.findAll();
-        MemberDto memberDto = memberService.create(userName, password, email, nickName);
+        MemberDto memberDto = memberService.register(userName, password, email, nickName);
         List<Member> afterMembers = memberRepository.findAll();
 
         //then

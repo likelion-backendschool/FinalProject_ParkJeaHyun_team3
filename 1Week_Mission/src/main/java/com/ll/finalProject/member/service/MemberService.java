@@ -16,11 +16,11 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
     private final ModelMapper modelMapper;
 
-    public MemberDto create(String userName, String password, String email) {
-        return this.create(userName, password, email, "none");
+    public MemberDto register(String userName, String password, String email) {
+        return this.register(userName, password, email, "none");
     }
 
-    public MemberDto create(String userName, String password, String email, String nickName) {
+    public MemberDto register(String userName, String password, String email, String nickName) {
         Member member = Member.builder()
                 .userName(userName)
                 .password(this.passwordEncoder.encode(password))
