@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -13,6 +14,7 @@ public class MailService {
     private JavaMailSender mailSender;
     private static final String FROM_ADDRESS = "mailbot883@gmail.com";
 
+    @Async("mailExecutor")
     public void mailSend(MailDto mailDto) {
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(mailDto.getAddress());
