@@ -90,19 +90,40 @@ public class MemberServiceTests {
     @Test
     @DisplayName("회원가입 후 로그인 테스트")
     public void t3() throws Exception {
-        //회원가입
+        //given
         String username = "user1";
         String password = "1234";
         String email = "user1@test.com";
         memberService.register(username, password, email);
 
-        // when
+        //when
         mvc.perform(post("/member/login")
                         .param("username", "user1")
                         .param("password", "1234")
                         .with(csrf()))
-        // then
+        //then
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 테스트")
+    public void t4() throws Exception {
+        //given
+        String username = "user1";
+        String password = "1234";
+        String email = "user1@test.com";
+        MemberDto memberDto = memberService.register(username, password, email);
+
+        //when
+        String newEmail = "newUser1@test.com";
+        String newNickname = "aaa";
+        MemberDto newMemberDto = memberService.modify(username, newEmail, newNickname);
+
+        //then
+        assertThat(memberDto.getEmail()).isNotEqualTo(newMemberDto.getEmail());
+        assertThat(memberDto.getNickName()).isNotEqualTo(newMemberDto.getNickName());
+        assertThat(newMemberDto.getEmail()).isEqualTo(newEmail);
+        assertThat(newMemberDto.getNickName()).isEqualTo(newNickname);
     }
 }
