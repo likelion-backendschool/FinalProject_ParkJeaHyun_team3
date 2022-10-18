@@ -1,6 +1,19 @@
 spring:
-  datasource:
-    url: jdbc:mariadb://localhost:3306/final_project?useUnicode=true&characterEncoding=utf8&serverTimeZone=Asia/Seoul
-    driverClassName: org.mariadb.jdbc.Driver
-    username: root
-    password: ${DB_PASSWORD}
+  profiles:
+    active: ${PROFILE}
+  devtools:
+    livereload:
+      restart:
+        enabled: 'true'
+      enabled: 'true'
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${GMAIL_ADDRESS}
+    password: ${GMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
