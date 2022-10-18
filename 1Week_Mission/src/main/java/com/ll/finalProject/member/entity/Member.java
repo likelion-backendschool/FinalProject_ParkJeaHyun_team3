@@ -13,12 +13,12 @@ import lombok.experimental.SuperBuilder;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Member extends BaseEntity {
-    private String userName;
+    private String username;
 
     private String password;
 
     @Column(unique = true)
-    private String nickName;
+    private String nickname;
 
     @Column(unique = true)
     private String email;

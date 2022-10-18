@@ -25,10 +25,10 @@ public class MemberService {
 
     public MemberDto register(String userName, String password, String email, String nickName) {
         Member member = Member.builder()
-                .userName(userName)
+                .username(userName)
                 .password(this.passwordEncoder.encode(password))
                 .email(email)
-                .nickName(nickName)
+                .nickname(nickName)
                 .build();
 
         this.memberRepository.save(member);

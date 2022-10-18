@@ -48,4 +48,9 @@ public class MemberController {
     public String getWelcomePage() {
         return "member/welcome";
     }
+
+    @GetMapping("/login")
+    public String login() {
+        return "member/login_form";
+    }
 }
