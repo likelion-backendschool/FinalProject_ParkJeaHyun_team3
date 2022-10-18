@@ -24,4 +24,9 @@ public class Member extends BaseEntity {
     private String email;
 
     private int authLevel;
+
+    public void modifyMember(String email, String nickname) {
+        this.email = email;
+        this.nickname = nickname;
+    }
 }

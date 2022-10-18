@@ -1,0 +1,20 @@
+<html layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="container my-3">
+    <form th:action="@{/member/modify}" method="post" th:object="${memberModifyForm}">
+        <div th:replace="form_errors :: formErrorsFragment"></div>
+        <div class="mb-3">
+            <label for="email" class="form-label">email</label>
+            <input type="text" name="email" id="email" class="form-control" th:field="*{email}">
+        </div>
+        <div class="mb-3">
+            <label for="nickname" class="form-label">닉네임</label>
+            <input type="text" name="nickname" id="nickname" class="form-control" th:field="*{nickname}">
+        </div>
+        <div class="mb-3">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" name="password" id="password" class="form-control">
+        </div>
+        <button type="submit" class="btn btn-primary">수정</button>
+    </form>
+</div>
+</html>

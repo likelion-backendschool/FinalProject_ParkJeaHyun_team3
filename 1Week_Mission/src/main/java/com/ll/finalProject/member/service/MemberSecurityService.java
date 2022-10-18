@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.ll.finalProject.member.MemberRole;
+import com.ll.finalProject.member.dto.MemberContext;
 import com.ll.finalProject.member.entity.Member;
 import com.ll.finalProject.member.repository.MemberRepository;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,6 +37,6 @@ public class MemberSecurityService implements UserDetailsService {
         } else {
             authorities.add(new SimpleGrantedAuthority(MemberRole.USER.getValue()));
         }
-        return new User(member.getUsername(), member.getPassword(), authorities);
+        return new MemberContext(member, authorities);
     }
 }
