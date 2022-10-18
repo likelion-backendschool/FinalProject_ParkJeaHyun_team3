@@ -1,4 +1,4 @@
-package com.ll.finalProject.member;
+package com.ll.finalProject.form;
 
 import lombok.Getter;
 import lombok.Setter;
