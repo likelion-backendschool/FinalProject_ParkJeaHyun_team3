@@ -9,6 +9,8 @@ import com.ll.finalProject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -78,12 +80,15 @@ public class MemberController {
             return "user/my_page_form";
         }
         try {
-            memberService.modify(memberContext.getUsername(), memberModifyForm.getEmail(), memberModifyForm.getNickname());
+            memberService.modify(memberContext.getUsername(), memberModifyForm.getEmail(), memberModifyForm.getNickname(), memberModifyForm.getPassword());
         } catch (EmailDuplicatedException e) {
             bindingResult.reject("EmailDuplicated", e.getMessage());
             return "member/modify_form";
         } catch (NicknameDuplicatedException e) {
             bindingResult.reject("NicknameDuplicated", e.getMessage());
+            return "member/modify_form";
+        } catch (BadCredentialsException e) {
+            bindingResult.reject("PasswordInCorrect", e.getMessage());
             return "member/modify_form";
         }
 

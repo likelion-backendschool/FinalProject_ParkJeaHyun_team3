@@ -10,6 +10,7 @@ import com.ll.finalProject.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -44,19 +45,24 @@ public class MemberService {
         return this.modelMapper.map(member, MemberDto.class);
     }
 
-    public MemberDto modify(String username, String email, String nickname) {
+    public MemberDto modify(String username, String email, String nickname, String password) {
         Optional<Member> _member = memberRepository.findByusername(username);
         Member member = _member.get();
-        member.modifyMember(email, nickname);
-        try {
-            memberRepository.save(member);
-        } catch (DataIntegrityViolationException e) {
-            if (memberRepository.findByNickname(nickname).isPresent()) {
-                throw new NicknameDuplicatedException("이미 사용중인 닉네임 입니다.");
-            } else {
-                throw new EmailDuplicatedException("이미 사용중인 email 입니다.");
+        if (passwordEncoder.matches(password, member.getPassword())) {
+            member.modifyMember(email, nickname);
+            try {
+                memberRepository.save(member);
+            } catch (DataIntegrityViolationException e) {
+                if (memberRepository.findByNickname(nickname).isPresent()) {
+                    throw new NicknameDuplicatedException("이미 사용중인 닉네임 입니다.");
+                } else {
+                    throw new EmailDuplicatedException("이미 사용중인 email 입니다.");
+                }
             }
+        } else {
+            throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
         }
+
         return modelMapper.map(member, MemberDto.class);
     }
 }
