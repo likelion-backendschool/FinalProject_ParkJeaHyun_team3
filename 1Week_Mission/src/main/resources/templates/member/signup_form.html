@@ -25,7 +25,6 @@
         </div>
         <button type="submit" class="btn btn-primary" id="enrollButton">회원가입</button>
     </form>
-
     <script>
         window.onload = () => {
             document.getElementById('enrollButton').addEventListener('click', (e) => {
@@ -33,7 +32,7 @@
                 const pwdConfirm = document.getElementById("pwdConfirm");
                 if(pwd.value.trim() != pwdConfirm.value.trim()) {
                     alert("비밀번호를 확인해주세요.");
-                    pwdConfrim.select();
+                    pwdConfirm.select();
                     e.preventDefault();
                 }
             });
