@@ -9,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +17,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
@@ -48,9 +50,9 @@ public class MemberServiceTests {
     @DisplayName("1명 회원 생성 테스트")
     public void t1() throws Exception {
         //given
-        String username = "user1";
+        String username = "user5";
         String password = "1234";
-        String email = "user1@test.com";
+        String email = "user5@test.com";
 
         //when
         List<Member> beforeMembers = memberRepository.findAll();
@@ -59,8 +61,8 @@ public class MemberServiceTests {
 
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
-        assertThat(memberDto.getEmail()).isEqualTo("user1@test.com");
-        assertThat(memberDto.getNickName()).isEqualTo("none");
+        assertThat(memberDto.getEmail()).isEqualTo("user5@test.com");
+        assertThat(memberDto.getNickName()).isNull();
         assertThat(memberDto.getCreateDate().getMonth()).isEqualTo(LocalDateTime.now().getMonth());
         assertThat(memberDto.getCreateDate().getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
     }
@@ -69,9 +71,9 @@ public class MemberServiceTests {
     @DisplayName("1명 회원 생성 테스트(+nickName)")
     public void t2() throws Exception {
         //given
-        String username = "user1";
+        String username = "user5";
         String password = "1234";
-        String email = "user1@test.com";
+        String email = "user5@test.com";
         String nickname = "Hong";
 
         //when
@@ -81,7 +83,7 @@ public class MemberServiceTests {
 
         //then
         assertThat(afterMembers.size()).isEqualTo(beforeMembers.size() + 1);
-        assertThat(memberDto.getEmail()).isEqualTo("user1@test.com");
+        assertThat(memberDto.getEmail()).isEqualTo("user5@test.com");
         assertThat(memberDto.getNickName()).isEqualTo("Hong");
         assertThat(memberDto.getCreateDate().getMonth()).isEqualTo(LocalDateTime.now().getMonth());
         assertThat(memberDto.getCreateDate().getDayOfMonth()).isEqualTo(LocalDateTime.now().getDayOfMonth());
@@ -90,12 +92,6 @@ public class MemberServiceTests {
     @Test
     @DisplayName("회원가입 후 로그인 테스트")
     public void t3() throws Exception {
-        //given
-        String username = "user1";
-        String password = "1234";
-        String email = "user1@test.com";
-        memberService.register(username, password, email);
-
         //when
         mvc.perform(post("/member/login")
                         .param("username", "user1")
@@ -108,22 +104,42 @@ public class MemberServiceTests {
 
     @Test
     @DisplayName("회원 정보 수정 테스트")
+    @WithUserDetails("user1")
     public void t4() throws Exception {
         //given
-        String username = "user1";
-        String password = "1234";
-        String email = "user1@test.com";
-        MemberDto memberDto = memberService.register(username, password, email);
-
-        //when
         String newEmail = "newUser1@test.com";
         String newNickname = "aaa";
-        MemberDto newMemberDto = memberService.modify(username, newEmail, newNickname);
+
+        //when
+        mvc.perform(post("/member/modify")
+                        .param("email", newEmail)
+                        .param("nickname", newNickname)
+                        .param("password", "1234")
+                        .with(csrf()))
+        //then
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrl("/"));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 테스트(+잘못된 password)")
+    @WithUserDetails("user1")
+    public void t5() throws Exception {
+        //given
+        String newEmail = "newUser1@test.com";
+        String newNickname = "aaa";
+
+        //when
+        mvc.perform(post("/member/modify")
+                        .param("email", newEmail)
+                        .param("nickname", newNickname)
+                        .param("password", "6789")
+                        .with(csrf()));
 
         //then
-        assertThat(memberDto.getEmail()).isNotEqualTo(newMemberDto.getEmail());
-        assertThat(memberDto.getNickName()).isNotEqualTo(newMemberDto.getNickName());
-        assertThat(newMemberDto.getEmail()).isEqualTo(newEmail);
-        assertThat(newMemberDto.getNickName()).isEqualTo(newNickname);
+        Optional<Member> _member = memberRepository.findByusername("user1");
+        Member member = _member.get();
+        assertThat(member.getEmail()).isNotEqualTo(newEmail);
+        assertThat(member.getNickname()).isNotEqualTo(newNickname);
     }
 }

@@ -26,7 +26,7 @@ public class MemberService {
     private final MailService mailService;
 
     public MemberDto register(String username, String password, String email) {
-        return this.register(username, password, email, "none");
+        return this.register(username, password, email, null);
     }
 
     public MemberDto register(String userName, String password, String email, String nickname) {
