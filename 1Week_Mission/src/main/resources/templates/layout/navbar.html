@@ -29,6 +29,9 @@
                 <li class="nav-item">
                     <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/post/write}">글쓰기</a>
                 </li>
+                <li class="nav-item">
+                    <a class="nav-link" sec:authorize="isAuthenticated()" th:href="@{/post/list}">글목록</a>
+                </li>
             </ul>
         </div>
     </div>

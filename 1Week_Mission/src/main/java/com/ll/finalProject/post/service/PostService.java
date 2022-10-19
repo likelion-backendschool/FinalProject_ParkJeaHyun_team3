@@ -65,4 +65,18 @@ public class PostService {
 
         return postDtos;
     }
+
+    public List<PostDto> get100PostList() {
+        List<Post> posts = postRepository.findTop100ByOrderByModifyDateDesc();
+        List<PostDto> postDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            MemberDto memberDto = modelMapper.map(post.getMember(), MemberDto.class);
+            PostDto postDto = modelMapper.map(post, PostDto.class);
+            postDto.setMemberDto(memberDto);
+            postDtos.add(postDto);
+        }
+
+        return postDtos;
+    }
 }
