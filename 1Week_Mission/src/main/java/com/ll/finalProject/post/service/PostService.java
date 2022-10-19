@@ -35,4 +35,15 @@ public class PostService {
         postRepository.save(post);
         return modelMapper.map(post, PostDto.class);
     }
+
+    public PostDto findById(Long id) {
+        Optional<Post> _post = postRepository.findById(id);
+
+        if (_post.isEmpty()) {
+            throw new DataNotFoundException("글이 존재하지 않습니다.");
+        }
+
+        Post post = _post.get();
+        return modelMapper.map(post, PostDto.class);
+    }
 }

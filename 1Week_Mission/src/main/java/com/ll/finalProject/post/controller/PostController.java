@@ -31,4 +31,11 @@ public class PostController {
         PostDto postDto = postService.write(memberContext.getUsername(), postWriteForm.getSubject(), postWriteForm.getContent());
         return "redirect:/post/%d".formatted(postDto.getId());
     }
+
+    @GetMapping("/{id}")
+    public String getList(Model model, @PathVariable Long id) {
+        PostDto postDto = postService.findById(id);
+        model.addAttribute("postDto", postDto);
+        return "post/detail";
+    }
 }
