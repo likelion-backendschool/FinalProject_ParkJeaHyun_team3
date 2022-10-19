@@ -3,6 +3,7 @@ package com.ll.finalProject.member.controller;
 import com.ll.finalProject.base.exception.EmailDuplicatedException;
 import com.ll.finalProject.base.exception.NicknameDuplicatedException;
 import com.ll.finalProject.form.MemberModifyForm;
+import com.ll.finalProject.form.MemberModifyPasswordForm;
 import com.ll.finalProject.form.MemberRegisterForm;
 import com.ll.finalProject.member.dto.MemberContext;
 import com.ll.finalProject.member.service.MemberService;
@@ -77,7 +78,7 @@ public class MemberController {
     @PostMapping("/modify")
     public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid MemberModifyForm memberModifyForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "user/my_page_form";
+            return "member/modify_form";
         }
         try {
             memberService.modify(memberContext.getUsername(), memberModifyForm.getEmail(), memberModifyForm.getNickname(), memberModifyForm.getPassword());
@@ -95,6 +96,32 @@ public class MemberController {
         /* 변경된 세션 등록 */
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(memberContext.getUsername(), memberModifyForm.getPassword()));
+
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        return "redirect:/";
+    }
+
+    @GetMapping("/modifyPassword")
+    public String getModifyPasswordForm(Model model, MemberModifyPasswordForm memberModifyPasswordForm) {
+        return "member/modifyPassword_form";
+    }
+
+    @PostMapping("/modifyPassword")
+    public String modifyPassword(@AuthenticationPrincipal MemberContext memberContext, @Valid MemberModifyPasswordForm memberModifyPasswordForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "member/modifyPassword_form";
+        }
+        try {
+            memberService.modifyPassword(memberContext.getUsername(), memberModifyPasswordForm.getOldPassword(), memberModifyPasswordForm.getPassword());
+        } catch (BadCredentialsException e) {
+            bindingResult.reject("PasswordInCorrect", e.getMessage());
+            return "member/modifyPassword_form";
+        }
+
+        /* 변경된 세션 등록 */
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(memberContext.getUsername(), memberModifyPasswordForm.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 

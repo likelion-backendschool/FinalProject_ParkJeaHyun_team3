@@ -65,4 +65,17 @@ public class MemberService {
 
         return modelMapper.map(member, MemberDto.class);
     }
+
+    public MemberDto modifyPassword(String username, String oldPassword, String newPassword) {
+        Optional<Member> _member = memberRepository.findByusername(username);
+        Member member = _member.get();
+        if (passwordEncoder.matches(oldPassword, member.getPassword())) {
+            member.modifyMemberPassword(passwordEncoder.encode(newPassword));
+            memberRepository.save(member);
+        } else {
+            throw new BadCredentialsException("기존 비밀번호가 일치하지 않습니다.");
+        }
+
+        return modelMapper.map(member, MemberDto.class);
+    }
 }
