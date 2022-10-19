@@ -1,0 +1,12 @@
+<html layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="container my-3">
+    <form th:action="@{/member/findUsername}" method="post" th:object="${FindUsernameForm}">
+        <div th:replace="form_errors :: formErrorsFragment"></div>
+        <div class="mb-3">
+            <label for="email" class="form-label">이메일</label>
+            <input type="text" name="email" id="email" class="form-control" th:field="*{email}">
+        </div>
+        <button type="submit" class="btn btn-primary">찾기</button>
+    </form>
+</div>
+</html>
