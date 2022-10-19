@@ -1,6 +1,7 @@
 package com.ll.finalProject.member.service;
 
 import com.ll.finalProject.base.Util;
+import com.ll.finalProject.base.exception.DataNotFoundException;
 import com.ll.finalProject.base.exception.EmailDuplicatedException;
 import com.ll.finalProject.base.exception.NicknameDuplicatedException;
 import com.ll.finalProject.member.dto.MailDto;
@@ -47,6 +48,11 @@ public class MemberService {
 
     public MemberDto modify(String username, String email, String nickname, String password) {
         Optional<Member> _member = memberRepository.findByusername(username);
+
+        if (_member.isEmpty()) {
+            throw new DataNotFoundException("회원이 존재하지 않습니다.");
+        }
+
         Member member = _member.get();
         if (passwordEncoder.matches(password, member.getPassword())) {
             member.modifyMember(email, nickname);
@@ -68,6 +74,11 @@ public class MemberService {
 
     public MemberDto modifyPassword(String username, String oldPassword, String newPassword) {
         Optional<Member> _member = memberRepository.findByusername(username);
+
+        if (_member.isEmpty()) {
+            throw new DataNotFoundException("회원이 존재하지 않습니다.");
+        }
+
         Member member = _member.get();
         if (passwordEncoder.matches(oldPassword, member.getPassword())) {
             member.modifyMemberPassword(passwordEncoder.encode(newPassword));
@@ -77,5 +88,15 @@ public class MemberService {
         }
 
         return modelMapper.map(member, MemberDto.class);
+    }
+
+    public MemberDto findUsernameByEmail(String email) {
+        Optional<Member> _member = memberRepository.findByEmail(email);
+        if (_member.isPresent()) {
+            Member member = _member.get();
+            return modelMapper.map(member, MemberDto.class);
+        } else {
+            throw new DataNotFoundException("해당하는 이메일의 회원이 없습니다.");
+        }
     }
 }

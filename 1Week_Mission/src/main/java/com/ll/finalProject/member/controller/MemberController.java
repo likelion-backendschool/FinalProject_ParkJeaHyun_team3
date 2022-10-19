@@ -1,16 +1,18 @@
 package com.ll.finalProject.member.controller;
 
+import com.ll.finalProject.base.exception.DataNotFoundException;
 import com.ll.finalProject.base.exception.EmailDuplicatedException;
 import com.ll.finalProject.base.exception.NicknameDuplicatedException;
+import com.ll.finalProject.form.MemberFindUsernameForm;
 import com.ll.finalProject.form.MemberModifyForm;
 import com.ll.finalProject.form.MemberModifyPasswordForm;
 import com.ll.finalProject.form.MemberRegisterForm;
 import com.ll.finalProject.member.dto.MemberContext;
+import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,7 +71,7 @@ public class MemberController {
     }
 
     @GetMapping("/modify")
-    public String getModifyForm(Model model, @AuthenticationPrincipal MemberContext memberContext, MemberModifyForm memberModifyForm) {
+    public String getModifyForm(@AuthenticationPrincipal MemberContext memberContext, MemberModifyForm memberModifyForm) {
         memberModifyForm.setEmail(memberContext.getEmail());
         memberModifyForm.setNickname(memberContext.getNickname());
         return "member/modify_form";
@@ -103,7 +105,7 @@ public class MemberController {
     }
 
     @GetMapping("/modifyPassword")
-    public String getModifyPasswordForm(Model model, MemberModifyPasswordForm memberModifyPasswordForm) {
+    public String getModifyPasswordForm(MemberModifyPasswordForm memberModifyPasswordForm) {
         return "member/modifyPassword_form";
     }
 
@@ -112,6 +114,7 @@ public class MemberController {
         if (bindingResult.hasErrors()) {
             return "member/modifyPassword_form";
         }
+
         try {
             memberService.modifyPassword(memberContext.getUsername(), memberModifyPasswordForm.getOldPassword(), memberModifyPasswordForm.getPassword());
         } catch (BadCredentialsException e) {
@@ -126,5 +129,27 @@ public class MemberController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return "redirect:/";
+    }
+
+    @GetMapping("/findUsername")
+    public String getFindUsernameForm(MemberFindUsernameForm memberFindUsernameForm) {
+        return "member/findUsername_form";
+    }
+
+    @PostMapping("/findUsername")
+    public String findUsername(Model model, @Valid MemberFindUsernameForm memberFindUsernameForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "member/findUsername_form";
+        }
+
+        try {
+            MemberDto memberDto = memberService.findUsernameByEmail(memberFindUsernameForm.getEmail());
+            model.addAttribute("memberDto", memberDto);
+        } catch (DataNotFoundException e) {
+            bindingResult.reject("MemberNotFound", e.getMessage());
+            return "member/findUsername_form";
+        }
+
+        return "member/showUsername";
     }
 }
