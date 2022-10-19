@@ -7,7 +7,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-public class MemberModifyPasswordForm {
+public class ModifyPasswordForm {
     @NotEmpty(message = "이전 비밀번호를 입력해주세요")
     private String oldPassword;
 

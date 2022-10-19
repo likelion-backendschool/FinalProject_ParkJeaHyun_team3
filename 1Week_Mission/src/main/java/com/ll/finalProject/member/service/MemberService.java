@@ -9,6 +9,7 @@ import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.entity.Member;
 import com.ll.finalProject.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -40,8 +41,7 @@ public class MemberService {
 
         this.memberRepository.save(member);
 
-        MailDto mailDto = Util.Mail.getWelcomeMailDto(member.getEmail());
-        this.mailService.mailSend(mailDto);
+        this.mailService.welcomeMailSend(email);
 
         return this.modelMapper.map(member, MemberDto.class);
     }
@@ -90,13 +90,30 @@ public class MemberService {
         return modelMapper.map(member, MemberDto.class);
     }
 
-    public MemberDto findUsernameByEmail(String email) {
+    public MemberDto findUsername(String email) {
         Optional<Member> _member = memberRepository.findByEmail(email);
         if (_member.isPresent()) {
             Member member = _member.get();
             return modelMapper.map(member, MemberDto.class);
         } else {
             throw new DataNotFoundException("해당하는 이메일의 회원이 없습니다.");
+        }
+    }
+
+    public void findPassword(String username, String email) {
+        Optional<Member> _member = memberRepository.findByusername(username);
+        if (_member.isEmpty()) {
+            throw new DataNotFoundException("회원이 존재하지 않습니다.");
+        } else {
+            Member member = _member.get();
+            if (!member.getEmail().equals(email)) {
+                throw new RuntimeException("이메일이 일치하지 않습니다.");
+            } else {
+                String tempPassword = RandomStringUtils.randomAlphanumeric(10);
+                member.modifyMemberPassword(passwordEncoder.encode(tempPassword));
+                memberRepository.save(member);
+                this.mailService.tempPasswordMailSend(email, tempPassword);
+            }
         }
     }
 }

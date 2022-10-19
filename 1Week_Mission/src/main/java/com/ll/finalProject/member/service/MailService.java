@@ -15,12 +15,23 @@ public class MailService {
     private static final String FROM_ADDRESS = "mailbot883@gmail.com";
 
     @Async("mailExecutor")
-    public void mailSend(MailDto mailDto) {
+    public void welcomeMailSend(String to) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(mailDto.getAddress());
+        message.setTo(to);
         message.setFrom(MailService.FROM_ADDRESS);
-        message.setSubject(mailDto.getTitle());
-        message.setText(mailDto.getMessage());
+        message.setSubject("회원가입을 축하합니다!");
+        message.setText("원하는 글을 작성하세요!");
+
+        mailSender.send(message);
+    }
+
+    @Async("mailExecutor")
+    public void tempPasswordMailSend(String to, String tempPassword) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setFrom(MailService.FROM_ADDRESS);
+        message.setSubject("임시 비밀번호 발급");
+        message.setText(tempPassword);
 
         mailSender.send(message);
     }

@@ -3,10 +3,7 @@ package com.ll.finalProject.member.controller;
 import com.ll.finalProject.base.exception.DataNotFoundException;
 import com.ll.finalProject.base.exception.EmailDuplicatedException;
 import com.ll.finalProject.base.exception.NicknameDuplicatedException;
-import com.ll.finalProject.form.MemberFindUsernameForm;
-import com.ll.finalProject.form.MemberModifyForm;
-import com.ll.finalProject.form.MemberModifyPasswordForm;
-import com.ll.finalProject.form.MemberRegisterForm;
+import com.ll.finalProject.form.*;
 import com.ll.finalProject.member.dto.MemberContext;
 import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.service.MemberService;
@@ -105,18 +102,18 @@ public class MemberController {
     }
 
     @GetMapping("/modifyPassword")
-    public String getModifyPasswordForm(MemberModifyPasswordForm memberModifyPasswordForm) {
+    public String getModifyPasswordForm(ModifyPasswordForm modifyPasswordForm) {
         return "member/modifyPassword_form";
     }
 
     @PostMapping("/modifyPassword")
-    public String modifyPassword(@AuthenticationPrincipal MemberContext memberContext, @Valid MemberModifyPasswordForm memberModifyPasswordForm, BindingResult bindingResult) {
+    public String modifyPassword(@AuthenticationPrincipal MemberContext memberContext, @Valid ModifyPasswordForm modifyPasswordForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "member/modifyPassword_form";
         }
 
         try {
-            memberService.modifyPassword(memberContext.getUsername(), memberModifyPasswordForm.getOldPassword(), memberModifyPasswordForm.getPassword());
+            memberService.modifyPassword(memberContext.getUsername(), modifyPasswordForm.getOldPassword(), modifyPasswordForm.getPassword());
         } catch (BadCredentialsException e) {
             bindingResult.reject("PasswordInCorrect", e.getMessage());
             return "member/modifyPassword_form";
@@ -124,7 +121,7 @@ public class MemberController {
 
         /* 변경된 세션 등록 */
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(memberContext.getUsername(), memberModifyPasswordForm.getPassword()));
+                new UsernamePasswordAuthenticationToken(memberContext.getUsername(), modifyPasswordForm.getPassword()));
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -132,18 +129,18 @@ public class MemberController {
     }
 
     @GetMapping("/findUsername")
-    public String getFindUsernameForm(MemberFindUsernameForm memberFindUsernameForm) {
+    public String getFindUsernameForm(FindUsernameForm findUsernameForm) {
         return "member/findUsername_form";
     }
 
     @PostMapping("/findUsername")
-    public String findUsername(Model model, @Valid MemberFindUsernameForm memberFindUsernameForm, BindingResult bindingResult) {
+    public String findUsername(Model model, @Valid FindUsernameForm findUsernameForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "member/findUsername_form";
         }
 
         try {
-            MemberDto memberDto = memberService.findUsernameByEmail(memberFindUsernameForm.getEmail());
+            MemberDto memberDto = memberService.findUsername(findUsernameForm.getEmail());
             model.addAttribute("memberDto", memberDto);
         } catch (DataNotFoundException e) {
             bindingResult.reject("MemberNotFound", e.getMessage());
@@ -151,5 +148,31 @@ public class MemberController {
         }
 
         return "member/showUsername";
+    }
+
+    @GetMapping("/findPassword")
+    public String getFindPasswordForm(FindPasswordForm findPasswordForm) {
+        return "member/findPassword_form";
+    }
+
+    @PostMapping("/findPassword")
+    public String findPassword(@Valid FindPasswordForm findPasswordForm, BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            return "member/findPassword_form";
+        }
+
+        try {
+            memberService.findPassword(findPasswordForm.getUsername(), findPasswordForm.getEmail());
+        } catch (DataNotFoundException e) {
+            e.printStackTrace();
+            bindingResult.reject("MemberNotFound", e.getMessage());
+            return "member/findPassword_form";
+        } catch(Exception e) {
+            e.printStackTrace();
+            bindingResult.reject("findPasswordFailed", e.getMessage());
+            return "member/findPassword_form";
+        }
+
+        return "redirect:/";
     }
 }
