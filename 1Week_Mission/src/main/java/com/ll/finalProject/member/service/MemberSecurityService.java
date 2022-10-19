@@ -34,6 +34,8 @@ public class MemberSecurityService implements UserDetailsService {
         List<GrantedAuthority> authorities = new ArrayList<>();
         if (member.getAuthLevel() == 7) {
             authorities.add(new SimpleGrantedAuthority(MemberRole.ADMIN.getValue()));
+        } else if (member.getAuthLevel() == 2) {
+            authorities.add(new SimpleGrantedAuthority(MemberRole.AUTHOR.getValue()));
         } else {
             authorities.add(new SimpleGrantedAuthority(MemberRole.USER.getValue()));
         }
