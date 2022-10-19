@@ -1,6 +1,7 @@
 package com.ll.finalProject.post.service;
 
 import com.ll.finalProject.base.exception.DataNotFoundException;
+import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.entity.Member;
 import com.ll.finalProject.member.repository.MemberRepository;
 import com.ll.finalProject.post.dto.PostDto;
@@ -8,9 +9,13 @@ import com.ll.finalProject.post.entity.Post;
 import com.ll.finalProject.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -45,5 +50,19 @@ public class PostService {
 
         Post post = _post.get();
         return modelMapper.map(post, PostDto.class);
+    }
+
+    public List<PostDto> getAllPostList() {
+        List<Post> posts = postRepository.findAll();
+        List<PostDto> postDtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            MemberDto memberDto = modelMapper.map(post.getMember(), MemberDto.class);
+            PostDto postDto = modelMapper.map(post, PostDto.class);
+            postDto.setMemberDto(memberDto);
+            postDtos.add(postDto);
+        }
+
+        return postDtos;
     }
 }

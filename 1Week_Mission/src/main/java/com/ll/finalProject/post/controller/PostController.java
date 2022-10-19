@@ -33,9 +33,15 @@ public class PostController {
     }
 
     @GetMapping("/{id}")
-    public String getList(Model model, @PathVariable Long id) {
+    public String getDetail(Model model, @PathVariable Long id) {
         PostDto postDto = postService.findById(id);
         model.addAttribute("postDto", postDto);
         return "post/detail";
+    }
+
+    @GetMapping("/list")
+    public String getList(Model model) {
+        model.addAttribute("postDtos", postService.getAllPostList());
+        return "post/list";
     }
 }

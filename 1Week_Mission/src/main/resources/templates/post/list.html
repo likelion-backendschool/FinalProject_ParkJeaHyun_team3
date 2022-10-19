@@ -1,0 +1,29 @@
+<html layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="container my-3">
+    <section>
+        <table class="table table-bordered">
+            <!-- CONTENTS !-->
+            <thead>
+            <tr>
+                <th class="col-md-1">번호</th>
+                <th class="col-md-4">글제목</th>
+                <th class="col-md-3">작성자</th>
+                <th class="col-md-2">작성일</th>
+                <th class="col-md-2">수정일</th>
+            </tr>
+            </thead>
+
+            <tbody>
+            <!-- CONTENTS !-->
+            <tr th:each="post : ${postDtos}">
+                <td th:text="${post.id}"></td>
+                <td><a th:href="'/post/'+${post.id}" th:text="${post.subject}"></a></td>
+                <td th:text="${post.memberDto.userName}"></td>
+                <td th:text="${post.createDate} ? ${#temporals.format(post.createDate,'yyyy-MM-dd HH:mm')} : ${post.createDate}"></td>
+                <td th:text="${post.modifyDate} ? ${#temporals.format(post.modifyDate,'yyyy-MM-dd HH:mm')} : ${post.modifyDate}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </section>
+</div>
+</html>
