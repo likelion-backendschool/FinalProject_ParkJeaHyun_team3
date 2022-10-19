@@ -1,0 +1,17 @@
+<html layout:decorate="~{layout/layout}">
+<div layout:fragment="content" class="container my-3">
+    <section>
+        <div class="container px-3 mx-auto">
+            <h1 class="font-bold text-lg">
+                <span th:text="${postDto.subject}"></span>
+            </h1>
+
+            <div>
+                <div>
+                    <span th:text="${postDto.content}"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+</html>
