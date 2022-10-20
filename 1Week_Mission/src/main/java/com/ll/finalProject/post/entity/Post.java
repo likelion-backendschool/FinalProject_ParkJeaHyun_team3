@@ -34,4 +34,9 @@ public class Post extends BaseEntity {
     @OneToMany(mappedBy = "post")
     @Builder.Default
     private Set<HashTag> hashTags = new LinkedHashSet<>();
+
+    public void modifyPost(String subject, String content) {
+        this.subject = subject;
+        this.content = content;
+    }
 }

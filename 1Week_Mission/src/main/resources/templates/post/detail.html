@@ -13,5 +13,7 @@
             </div>
         </div>
     </section>
+    <a th:href="|/post/${postDto.id}/modify|" class="btn btn-secondary btn-outline" sec:authorize="isAuthenticated()">수정</a>
+    <a th:href="|/post/${postDto.id}/delete|" class="btn btn-secondary btn-outline" sec:authorize="isAuthenticated()">삭제</a>
 </div>
 </html>
