@@ -1,6 +1,6 @@
 <html layout:decorate="~{layout/layout}">
 <div layout:fragment="content" class="container my-3">
-    <form th:action="@{/member/modify}" method="post" th:object="${memberModifyForm}">
+    <form th:action method="POST" th:object="${memberModifyForm}">
         <div th:replace="form_errors :: formErrorsFragment"></div>
         <div class="mb-3">
             <label for="email" class="form-label">email</label>

@@ -71,13 +71,13 @@ public class MemberController {
     public String getModifyForm(@AuthenticationPrincipal MemberContext memberContext, MemberModifyForm memberModifyForm) {
         memberModifyForm.setEmail(memberContext.getEmail());
         memberModifyForm.setNickname(memberContext.getNickname());
-        return "member/modify_form";
+        return "member/modifyMember_form";
     }
 
     @PostMapping("/modify")
     public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid MemberModifyForm memberModifyForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "member/modify_form";
+            return "member/modifyMember_form";
         }
         try {
             memberService.modify(memberContext.getUsername(), memberModifyForm.getEmail(), memberModifyForm.getNickname(), memberModifyForm.getPassword());
