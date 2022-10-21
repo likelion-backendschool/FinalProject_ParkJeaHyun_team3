@@ -88,7 +88,7 @@ public class PostController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping("/{id}/modify")
-    public String modify(Model model, @AuthenticationPrincipal MemberContext memberContext, PostModifyForm postModifyForm, @PathVariable Long id, BindingResult bindingResult) {
+    public String modify(Model model, @AuthenticationPrincipal MemberContext memberContext, @Valid PostModifyForm postModifyForm, @PathVariable Long id, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
             return "member/modify_form";
         }
