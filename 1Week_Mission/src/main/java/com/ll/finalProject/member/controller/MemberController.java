@@ -9,6 +9,7 @@ import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -67,27 +68,33 @@ public class MemberController {
         return "member/login_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modify")
     public String getModifyForm(@AuthenticationPrincipal MemberContext memberContext, MemberModifyForm memberModifyForm) {
         memberModifyForm.setEmail(memberContext.getEmail());
         memberModifyForm.setNickname(memberContext.getNickname());
-        return "member/modify_form";
+        return "member/modifyMember_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/modify")
     public String modify(@AuthenticationPrincipal MemberContext memberContext, @Valid MemberModifyForm memberModifyForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
-            return "member/modify_form";
+            return "member/modifyMember_form";
         }
+
         try {
             memberService.modify(memberContext.getUsername(), memberModifyForm.getEmail(), memberModifyForm.getNickname(), memberModifyForm.getPassword());
         } catch (EmailDuplicatedException e) {
+            e.printStackTrace();
             bindingResult.reject("EmailDuplicated", e.getMessage());
             return "member/modify_form";
         } catch (NicknameDuplicatedException e) {
+            e.printStackTrace();
             bindingResult.reject("NicknameDuplicated", e.getMessage());
             return "member/modify_form";
         } catch (BadCredentialsException e) {
+            e.printStackTrace();
             bindingResult.reject("PasswordInCorrect", e.getMessage());
             return "member/modify_form";
         }
@@ -101,11 +108,13 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/modifyPassword")
     public String getModifyPasswordForm(ModifyPasswordForm modifyPasswordForm) {
         return "member/modifyPassword_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/modifyPassword")
     public String modifyPassword(@AuthenticationPrincipal MemberContext memberContext, @Valid ModifyPasswordForm modifyPasswordForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -115,6 +124,7 @@ public class MemberController {
         try {
             memberService.modifyPassword(memberContext.getUsername(), modifyPasswordForm.getOldPassword(), modifyPasswordForm.getPassword());
         } catch (BadCredentialsException e) {
+            e.printStackTrace();
             bindingResult.reject("PasswordInCorrect", e.getMessage());
             return "member/modifyPassword_form";
         }
@@ -128,11 +138,13 @@ public class MemberController {
         return "redirect:/";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/findUsername")
     public String getFindUsernameForm(FindUsernameForm findUsernameForm) {
         return "member/findUsername_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/findUsername")
     public String findUsername(Model model, @Valid FindUsernameForm findUsernameForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -143,6 +155,7 @@ public class MemberController {
             MemberDto memberDto = memberService.findUsername(findUsernameForm.getEmail());
             model.addAttribute("memberDto", memberDto);
         } catch (DataNotFoundException e) {
+            e.printStackTrace();
             bindingResult.reject("MemberNotFound", e.getMessage());
             return "member/findUsername_form";
         }
@@ -150,11 +163,13 @@ public class MemberController {
         return "member/showUsername";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @GetMapping("/findPassword")
     public String getFindPasswordForm(FindPasswordForm findPasswordForm) {
         return "member/findPassword_form";
     }
 
+    @PreAuthorize("isAuthenticated()")
     @PostMapping("/findPassword")
     public String findPassword(@Valid FindPasswordForm findPasswordForm, BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {

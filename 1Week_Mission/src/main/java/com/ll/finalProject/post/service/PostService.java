@@ -1,6 +1,7 @@
 package com.ll.finalProject.post.service;
 
 import com.ll.finalProject.base.exception.DataNotFoundException;
+import com.ll.finalProject.base.exception.NoAuthorizationException;
 import com.ll.finalProject.member.dto.MemberDto;
 import com.ll.finalProject.member.entity.Member;
 import com.ll.finalProject.member.repository.MemberRepository;
@@ -9,13 +10,11 @@ import com.ll.finalProject.post.entity.Post;
 import com.ll.finalProject.post.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeMap;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -78,5 +77,25 @@ public class PostService {
         }
 
         return postDtos;
+    }
+
+    public PostDto modifyPost(Long memberId, Long postId, String subject, String content) {
+        Optional<Post> _post = postRepository.findById(postId);
+
+        if (_post.isEmpty()) {
+            throw new DataNotFoundException("글이 존재하지 않습니다.");
+        }
+
+        Optional<Member> _member = memberRepository.findById(memberId);
+        Post post = _post.get();
+
+        if (_member.get() != post.getMember()) {
+            throw new NoAuthorizationException("해당 글의 수정 권한이 없습니다.");
+        }
+
+        post.modifyPost(subject, content);
+        postRepository.save(post);
+
+        return modelMapper.map(post, PostDto.class);
     }
 }

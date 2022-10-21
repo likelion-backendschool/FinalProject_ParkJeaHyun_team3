@@ -2,8 +2,8 @@
 <div layout:fragment="content" class="container my-3">
     <section>
         <div class="container px-3 mx-auto">
-            <form th:action="@{/post/write}" method="POST" th:object="${postWriteForm}"
-                  onsubmit="ArticleSave__submitForm(this); return false;">
+            <form th:action method="POST" th:object="${postModifyForm}" onsubmit="ArticleSave__submitForm(this); return false;">
+                <div th:replace="form_errors :: formErrorsFragment"></div>
                 <div class="form-control w-full">
                     <label class="label">
                         <span class="label-text">제목</span>
